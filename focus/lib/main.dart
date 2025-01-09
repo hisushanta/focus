@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
   runApp(const FocusKeeperApp());
@@ -31,59 +30,114 @@ class FocusKeeperHomePage extends StatelessWidget {
       backgroundColor: const Color(0xFFFDF5E6), // Light beige background
       body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TimerCard(
-                  title: 'Focus',
-                  time: '25 min',
-                  icon: FontAwesomeIcons.fire,
-                  color: Colors.redAccent,
-                  iconColor: Colors.white,
-                  hasSoundIcon: true,
-                ),
-                const SizedBox(width: 10),
-                TimerCard(
-                  title: 'Short Break',
-                  time: '5 min',
-                  icon: FontAwesomeIcons.mugHot,
-                  color: Colors.blueAccent,
-                  iconColor: Colors.blueAccent,
-                ),
-                const SizedBox(width: 10),
-                TimerCard(
-                  title: 'Long Break',
-                  time: '30 min',
-                  icon: FontAwesomeIcons.personMeditating,
-                  color: Colors.grey.shade300,
-                  iconColor: Colors.black,
-                ),
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade700,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 16,
+            // Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      'FOCUS KEEPER',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.redAccent,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  child: const Text(
-                    'START',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  Flexible(
+                    child: Row(
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            'Timer Option',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            'Report',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                    ),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Timer Display
+            const Spacer(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text(
+                  'Focus Timer',
+                  style: TextStyle(fontSize: 20, color: Colors.grey),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  '25:00',
+                  style: TextStyle(
+                    fontSize: 80,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
               ],
             ),
+            const Spacer(),
+            // Timer Options
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                TimerCard(
+                  title: 'Focus',
+                  time: '25 min',
+                  color: Colors.redAccent,
+                ),
+                SizedBox(width: 8),
+                TimerCard(
+                  title: 'Short Break',
+                  time: '5 min',
+                  color: Colors.blueAccent,
+                ),
+                SizedBox(width: 8),
+                TimerCard(
+                  title: 'Long Break',
+                  time: '30 min',
+                  color: Colors.greenAccent,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey.shade800,
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
+              ),
+              child: const Text(
+                'START',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -94,77 +148,44 @@ class FocusKeeperHomePage extends StatelessWidget {
 class TimerCard extends StatelessWidget {
   final String title;
   final String time;
-  final IconData icon;
   final Color color;
-  final Color iconColor;
-  final bool hasSoundIcon;
 
   const TimerCard({
     Key? key,
     required this.title,
     required this.time,
-    required this.icon,
     required this.color,
-    required this.iconColor,
-    this.hasSoundIcon = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 100,
-      height: 80,
+      height: 70,
       decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color),
       ),
-      child: Stack(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                    Icon(
-                      icon,
-                      size: 16,
-                      color: iconColor,
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      time,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+          Text(
+            title,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
           ),
-          if (hasSoundIcon)
-            Positioned(
-              top: 8,
-              right: 8,
-              child: Icon(
-                Icons.volume_up,
-                size: 16,
-                color: Colors.red.shade900,
-              ),
+          const SizedBox(height: 4),
+          Text(
+            time,
+            style: TextStyle(
+              color: color,
+              fontSize: 14,
             ),
+          ),
         ],
       ),
     );
