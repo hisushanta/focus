@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,11 +12,9 @@ void main() async {
 
   // Set window properties
   WindowOptions windowOptions = const WindowOptions(
-    size: Size(420, 710), // Set default window size
-    minimumSize: Size(420, 710), // Set minimum window size
-    center: true, // Center the window on the screen
-    backgroundColor: const Color(0xFFFDF5E6),
-    titleBarStyle: TitleBarStyle.normal, // Hide the title bar
+    size: Size(420,710),
+    center: true,
+    titleBarStyle: TitleBarStyle.hidden, // Hide the title bar
   );
 
   // Wait for the window to be ready
@@ -24,7 +23,16 @@ void main() async {
     await windowManager.focus(); // Focus the window
   });
 
+  doWhenWindowReady(() {
+      final win = appWindow;
+      const initialSize =Size(420, 710);
+      win.minSize = initialSize;
+      win.size = initialSize;
+      win.alignment = Alignment.center;
+      win.show();
+    });
   runApp(const FocusKeeperApp());
+  
 }
 
 class FocusKeeperApp extends StatelessWidget {
@@ -245,13 +253,16 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Header
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Text(
+                Container(
+                color: Color(0xFFFDF5E6), // Set the background color here
+                height: 50, // Title bar height
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: MoveWindow(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          child:Text(
                           'FOCUS KEEPER',
                           style: const TextStyle(
                             fontSize: 18,
@@ -262,19 +273,14 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                        ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(color: Colors.white),
                         ),
                       ),
-                    ],
-                  ),
+                    
+                    WindowButtons(),
+                  ],
                 ),
+              ),
+                
                 // Timer Display
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -405,6 +411,36 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// Define Button Colors
+final buttonColors = WindowButtonColors(
+  iconNormal: Colors.black,
+  mouseOver: Colors.blue[200]!,
+  mouseDown: Colors.blue[300]!,
+  iconMouseOver: Colors.white,
+  iconMouseDown: Colors.white,
+);
+
+final closeButtonColors = WindowButtonColors(
+  mouseOver: Colors.red[300]!,
+  mouseDown: Colors.red[400]!,
+  iconNormal: Colors.black,
+  iconMouseOver: Colors.white,
+);
+
+// Window Buttons Widget
+class WindowButtons extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        MinimizeWindowButton(colors: buttonColors),
+        MaximizeWindowButton(colors: buttonColors),
+        CloseWindowButton(colors: closeButtonColors),
+      ],
     );
   }
 }
