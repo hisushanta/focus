@@ -60,10 +60,10 @@ class FocusKeeperHomePage extends StatefulWidget {
 }
 
 class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
-  String focusTime = '25:00';
-  String shortBreakTime = '05:00';
-  String longBreakTime = '30:00';
-  String currentTimer = '25:00'; // This will reflect the current timer value
+  String focusTime = '1:00';
+  String shortBreakTime = '1:00';
+  String longBreakTime = '1:00';
+  String currentTimer = '1:00'; // This will reflect the current timer value
   String currentPhase = 'Focus'; // Tracks the current phase (Focus, Short Break, Long Break)
 
   bool isEditingFocus = false;
@@ -81,6 +81,7 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
   @override
   void initState() {
     super.initState();
+    currentTimer = focusTime;
     _focusTimeController.text = focusTime;
     _shortBreakTimeController.text = shortBreakTime;
     _longBreakTimeController.text = longBreakTime;
@@ -239,181 +240,216 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
     });
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFDF5E6), // Light beige background
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Header
-                Container(
-                color: Color(0xFFFDF5E6), // Set the background color here
-                height: 50, // Title bar height
-                child: Row(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: MoveWindow(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                          child:Text(
-                          'FOCUS KEEPER',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.redAccent,
-                            fontStyle: FontStyle.italic,
+                    // Header
+                    Container(
+                      color: Color(0xFFFDF5E6), // Set the background color here
+                      height: 50, // Title bar height
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: MoveWindow(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                child: Text(
+                                  'FOCUS KEEPER',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.redAccent,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                        ),
-                      ),
-                    
-                    WindowButtons(),
-                  ],
-                ),
-              ),
-                
-                // Timer Display
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '$currentPhase Timer', // Display the current phase
-                      style: const TextStyle(fontSize: 20, color: Colors.grey, fontStyle: FontStyle.italic),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      currentTimer, // Display the current timer value
-                      style: const TextStyle(
-                        fontSize: 80,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                          WindowButtons(),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-                // Timer Options
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
+
+                    // Timer Display
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TimerCard(
-                          title: 'Focus',
-                          time: focusTime,
-                          color: Colors.redAccent,
-                          isEditing: isEditingFocus,
-                          onTap: () {
-                            setState(() {
-                              isEditingFocus = true;
-                              isEditingShortBreak = false;
-                              isEditingLongBreak = false;
-                            });
-                          },
-                          onSubmitted: (value) {
-                            final formattedTime = _formatTime(value);
-                            if (_validateTimeFormat(formattedTime)) {
-                              _updateTimer(formattedTime, 'Focus');
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Invalid time format. Use MMM:SS.'),
-                                ),
-                              );
-                            }
-                          },
-                          controller: _focusTimeController,
+                        Text(
+                          '$currentPhase Timer', // Display the current phase
+                          style: const TextStyle(fontSize: 20, color: Colors.grey, fontStyle: FontStyle.italic),
                         ),
-                        const SizedBox(width: 8),
-                        TimerCard(
-                          title: 'Short Break',
-                          time: shortBreakTime,
-                          color: Colors.blueAccent,
-                          isEditing: isEditingShortBreak,
-                          onTap: () {
-                            setState(() {
-                              isEditingShortBreak = true;
-                              isEditingFocus = false;
-                              isEditingLongBreak = false;
-                            });
-                          },
-                          onSubmitted: (value) {
-                            final formattedTime = _formatTime(value);
-                            if (_validateTimeFormat(formattedTime)) {
-                              _updateTimer(formattedTime, 'Short Break');
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Invalid time format. Use MMM:SS.'),
-                                ),
-                              );
-                            }
-                          },
-                          controller: _shortBreakTimeController,
-                        ),
-                        const SizedBox(width: 8),
-                        TimerCard(
-                          title: 'Long Break',
-                          time: longBreakTime,
-                          color: Colors.greenAccent,
-                          isEditing: isEditingLongBreak,
-                          onTap: () {
-                            setState(() {
-                              isEditingLongBreak = true;
-                              isEditingFocus = false;
-                              isEditingShortBreak = false;
-                            });
-                          },
-                          onSubmitted: (value) {
-                            final formattedTime = _formatTime(value);
-                            if (_validateTimeFormat(formattedTime)) {
-                              _updateTimer(formattedTime, 'Long Break');
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Invalid time format. Use MMM:SS.'),
-                                ),
-                              );
-                            }
-                          },
-                          controller: _longBreakTimeController,
+                        const SizedBox(height: 10),
+                        Text(
+                          currentTimer, // Display the current timer value
+                          style: const TextStyle(
+                            fontSize: 80,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                       ],
                     ),
-                  ),
+
+                    // Timer Options
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TimerCard(
+                              title: 'Focus',
+                              time: focusTime,
+                              color: Colors.redAccent,
+                              isEditing: isEditingFocus,
+                              onTap: () {
+                                setState(() {
+                                  isEditingFocus = true;
+                                  isEditingShortBreak = false;
+                                  isEditingLongBreak = false;
+                                });
+                              },
+                              onSubmitted: (value) {
+                                final formattedTime = _formatTime(value);
+                                if (_validateTimeFormat(formattedTime)) {
+                                  _updateTimer(formattedTime, 'Focus');
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Invalid time format. Use MMM:SS.'),
+                                    ),
+                                  );
+                                }
+                              },
+                              controller: _focusTimeController,
+                            ),
+                            const SizedBox(width: 8),
+                            TimerCard(
+                              title: 'Short Break',
+                              time: shortBreakTime,
+                              color: Colors.blueAccent,
+                              isEditing: isEditingShortBreak,
+                              onTap: () {
+                                setState(() {
+                                  isEditingShortBreak = true;
+                                  isEditingFocus = false;
+                                  isEditingLongBreak = false;
+                                });
+                              },
+                              onSubmitted: (value) {
+                                final formattedTime = _formatTime(value);
+                                if (_validateTimeFormat(formattedTime)) {
+                                  _updateTimer(formattedTime, 'Short Break');
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Invalid time format. Use MMM:SS.'),
+                                    ),
+                                  );
+                                }
+                              },
+                              controller: _shortBreakTimeController,
+                            ),
+                            const SizedBox(width: 8),
+                            TimerCard(
+                              title: 'Long Break',
+                              time: longBreakTime,
+                              color: Colors.greenAccent,
+                              isEditing: isEditingLongBreak,
+                              onTap: () {
+                                setState(() {
+                                  isEditingLongBreak = true;
+                                  isEditingFocus = false;
+                                  isEditingShortBreak = false;
+                                });
+                              },
+                              onSubmitted: (value) {
+                                final formattedTime = _formatTime(value);
+                                if (_validateTimeFormat(formattedTime)) {
+                                  _updateTimer(formattedTime, 'Long Break');
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Invalid time format. Use MMM:SS.'),
+                                    ),
+                                  );
+                                }
+                              },
+                              controller: _longBreakTimeController,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Start/Close Button
+                    ElevatedButton(
+                      onPressed: _toggleTimer,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isTimerRunning ? Colors.redAccent : Colors.grey.shade800,
+                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 16),
+                      ),
+                      child: Text(
+                        isTimerRunning ? 'CLOSE' : 'START',
+                        style: const TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                // Start/Close Button
-                ElevatedButton(
-                  onPressed: _toggleTimer,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isTimerRunning ? Colors.redAccent : Colors.grey.shade800,
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 16),
-                  ),
-                  child: Text(
-                    isTimerRunning ? 'CLOSE' : 'START',
-                    style: const TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                ),
-                const SizedBox(height: 40),
-              ],
+              ),
             ),
-          ),
+
+            // Settings Icon in the bottom left corner
+            Positioned(
+              left: 16,
+              bottom: 16,
+              child: IconButton(
+                icon: Icon(Icons.settings, color: Colors.grey[700], size: 30),
+                onPressed: () async {
+                  final result = await showDialog(
+                    context: context,
+                    builder: (context) => SettingsDialog(
+                      pomodoroTime: int.parse(focusTime.split(':')[0]),
+                      shortBreakTime: int.parse(shortBreakTime.split(':')[0]),
+                      longBreakTime: int.parse(longBreakTime.split(':')[0]),
+                    ),
+                  );
+
+                  if (result != null) {
+                    setState(() {
+                      focusTime = '${result['pomodoroTime']}:00';
+                      shortBreakTime = '${result['shortBreakTime']}:00';
+                      longBreakTime = '${result['longBreakTime']}:00';
+                      currentTimer = focusTime;
+                      // Update longBreakInterval if needed
+                    });
+                  }
+                },
+              )
+            ),
+          ],
         ),
       ),
     );
   }
 }
+
 
 // Define Button Colors
 final buttonColors = WindowButtonColors(
@@ -534,28 +570,8 @@ class _TimerCardState extends State<TimerCard> {
                 ),
               ),
               const SizedBox(height: 4),
-              widget.isEditing
-                  ? SizedBox(
-                      width: 80, // Increased width to accommodate MMM:SS
-                      height: 30, // Constrained height for the TextFormField
-                      child: TextFormField(
-                        controller: widget.controller,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: widget.color,
-                          fontSize: 14,
-                        ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
-                          hintText: 'MMM:SS',
-                        ),
-                        onFieldSubmitted: widget.onSubmitted,
-                        focusNode: _focusNode,
-                        autofocus: true, // Automatically focus the TextFormField
-                      ),
-                    )
-                  : Text(
+             
+              Text(
                       '${widget.time} min', // Always display "min" suffix
                       style: TextStyle(
                         color: widget.color,
@@ -566,6 +582,123 @@ class _TimerCardState extends State<TimerCard> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class SettingsDialog extends StatefulWidget {
+  final int pomodoroTime;
+  final int shortBreakTime;
+  final int longBreakTime;
+
+  const SettingsDialog({
+    Key? key,
+    required this.pomodoroTime,
+    required this.shortBreakTime,
+    required this.longBreakTime,
+  }) : super(key: key);
+
+  @override
+  _SettingsDialogState createState() => _SettingsDialogState();
+}
+
+class _SettingsDialogState extends State<SettingsDialog> {
+  late int _pomodoroTime;
+  late int _shortBreakTime;
+  late int _longBreakTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _pomodoroTime = widget.pomodoroTime;
+    _shortBreakTime = widget.shortBreakTime;
+    _longBreakTime = widget.longBreakTime;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Color(0xFFFDF5E6),
+      title: const Text(
+        'SETTINGS',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.redAccent,
+        ),
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildTimeField('Pomodoro', _pomodoroTime, Icons.timer, (value) {
+              setState(() {
+                _pomodoroTime = value;
+              });
+            }),
+            const SizedBox(height: 16),
+            _buildTimeField('Short Break', _shortBreakTime, Icons.coffee, (value) {
+              setState(() {
+                _shortBreakTime = value;
+              });
+            }),
+            const SizedBox(height: 16),
+            _buildTimeField('Long Break', _longBreakTime, Icons.self_improvement, (value) {
+              setState(() {
+                _longBreakTime = value;
+              });
+            }),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text(
+            'Cancel',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop({
+              'pomodoroTime': _pomodoroTime,
+              'shortBreakTime': _shortBreakTime,
+              'longBreakTime': _longBreakTime,
+            });
+          },
+          child: const Text(
+            'Save',
+            style: TextStyle(color: Colors.redAccent),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTimeField(String label, int value, IconData icon, Function(int) onChanged) {
+    return TextFormField(
+      initialValue: value.toString(),
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.grey),
+        prefixIcon: Icon(icon, color: Colors.redAccent),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.grey),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.redAccent),
+        ),
+      ),
+      onChanged: (text) {
+        final newValue = int.tryParse(text) ?? value;
+        onChanged(newValue);
+      },
     );
   }
 }
