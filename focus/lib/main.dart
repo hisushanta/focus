@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:audioplayers/audioplayers.dart';
+
 
 
 void main() async {
@@ -70,7 +72,8 @@ class BreakScreen extends StatefulWidget {
   final String breakNote;
   final VoidCallback onProceed;
   final VoidCallback onClose;
-
+  final VoidCallback playSound;
+  final VoidCallback stopSound;
   BreakScreen({
     Key? key,
     required this.breakType,
@@ -79,6 +82,8 @@ class BreakScreen extends StatefulWidget {
     required this.breakNote,
     required this.onProceed,
     required this.onClose,
+    required this.playSound,
+    required this.stopSound
   }) : super(key: key);
 
   @override
@@ -91,7 +96,7 @@ class _BreakScreenState extends State<BreakScreen> with SingleTickerProviderStat
   int _snoozeCountdown = 10; // Snooze timer countdown in seconds
   int _breakCountdown = 0; // Break timer countdown in seconds
   bool _isSnoozePhase = true;
-
+  
   @override
   void initState() {
     super.initState();
@@ -107,6 +112,7 @@ class _BreakScreenState extends State<BreakScreen> with SingleTickerProviderStat
     await windowManager.maximize();
     await windowManager.show();
     await windowManager.focus();
+    widget.playSound();
 
     _snoozeTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
@@ -114,6 +120,8 @@ class _BreakScreenState extends State<BreakScreen> with SingleTickerProviderStat
           _snoozeCountdown--;
         } else {
           // Snooze phase ends, start the break timer
+          widget.stopSound();
+          widget.playSound();
           _snoozeTimer.cancel();
           _startBreakTimer();
         }
@@ -132,6 +140,8 @@ class _BreakScreenState extends State<BreakScreen> with SingleTickerProviderStat
     // Wait for 30 seconds, then restore the window and restart the snooze countdown
     Future.delayed(const Duration(seconds: 30), () async {
       if (mounted) {
+        widget.stopSound();
+        widget.playSound();
         await windowManager.maximize();
         await windowManager.show();
         await windowManager.focus();
@@ -154,7 +164,10 @@ class _BreakScreenState extends State<BreakScreen> with SingleTickerProviderStat
           _breakCountdown--;
         } else {
           // Break time ends
+          
           _breakTimer.cancel();
+          widget.stopSound();
+          widget.playSound();
           widget.onProceed();
           Navigator.pop(context);
         }
@@ -298,7 +311,15 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
   bool isTimerRunning = false;
   int focusCyclesCompleted = 0;
   Timer? _timer;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
+  Future<void> _playSound() async {
+        await _audioPlayer.play(AssetSource('school-bell.mp3')); // Play sound from assets
+      }
+
+  Future<void> _stopSound() async {
+    await _audioPlayer.stop(); // Stop the sound
+  }
   @override
   void initState() {
     super.initState();
@@ -308,9 +329,11 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
     _longBreakTimeController.text = longBreakTime;
   }
 
+  
   @override
   void dispose() {
     _timer?.cancel();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -379,7 +402,6 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
     setState(() {
       isTimerRunning = true;
     });
-
     _runTimer();
   }
 
@@ -431,7 +453,9 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
           currentTimer = shortBreakTime;
           focusCyclesCompleted++;
         });
-        Navigator.push(context,MaterialPageRoute(builder: (context) =>  BreakScreen(breakType: "Short Break", breakDurationMinutes: int.parse(currentTimer.split(":")[0]),snoozNote: snoozNote.isEmpty?"Time For A Short Break":snoozNote,breakNote: breakNote.isEmpty?"Enjoy Your Short Break":breakNote, onProceed:_isTimeEnd,onClose: _closeButton, )));
+        Navigator.push(context,MaterialPageRoute(builder: (context) =>  BreakScreen(breakType: "Short Break", breakDurationMinutes: int.parse(currentTimer.split(":")[0]),snoozNote: snoozNote.isEmpty?"Time For A Short Break":snoozNote,
+                                                breakNote: breakNote.isEmpty?"Enjoy Your Short Break":breakNote, onProceed:_isTimeEnd,
+                                                onClose: _closeButton,playSound: _playSound,stopSound: _stopSound,)));
 
       } else {
         // Move to Long Break
@@ -440,7 +464,9 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
           currentTimer = longBreakTime;
           focusCyclesCompleted = 0;
         });
-        Navigator.push(context,MaterialPageRoute(builder: (context) =>  BreakScreen(breakType: "Long Break", breakDurationMinutes: int.parse(currentTimer.split(":")[0]),snoozNote: snoozNote.isEmpty?"Time For A Long Break":snoozNote,breakNote: breakNote.isEmpty?"Enjoy Your Long Break":breakNote, onProceed:_isTimeEnd,onClose: _closeButton,)));
+        Navigator.push(context,MaterialPageRoute(builder: (context) =>  BreakScreen(breakType: "Long Break", breakDurationMinutes: int.parse(currentTimer.split(":")[0]),snoozNote: snoozNote.isEmpty?"Time For A Long Break":snoozNote,
+                                                breakNote: breakNote.isEmpty?"Enjoy Your Long Break":breakNote, onProceed:_isTimeEnd,
+                                                onClose: _closeButton,playSound: _playSound,stopSound: _stopSound)));
 
       }
     } 
