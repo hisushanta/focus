@@ -24,6 +24,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - "assets/school-bell.mp3"
+    - "assets/focus_logo.png"
 flutter_icons:
   android: true
   ios: true
@@ -42,7 +45,5 @@ flutter_icons:
     generate: true
     image_path: "assets/focus_logo.png"
 
-  assets:
-    - "assets/school-bell.mp3"
-    - "assets/focus_logo.png"
+  
 
