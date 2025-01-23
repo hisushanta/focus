@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
@@ -587,19 +588,19 @@ class _SettingsDialogState extends State<SettingsDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildTimeField('Pomodoro', _pomodoroTime, Icons.timer, (value) {
+            _buildTimeField('Working Time', _pomodoroTime, Icons.timer, (value) {
               setState(() {
                 _pomodoroTime = value;
               });
             }),
             const SizedBox(height: 16),
-            _buildTimeField('Short Break', _shortBreakTime, Icons.coffee, (value) {
+            _buildTimeField('Short Break Time', _shortBreakTime, Icons.coffee, (value) {
               setState(() {
                 _shortBreakTime = value;
               });
             }),
             const SizedBox(height: 16),
-            _buildTimeField('Long Break', _longBreakTime, Icons.self_improvement, (value) {
+            _buildTimeField('Long Break Time', _longBreakTime, Icons.self_improvement, (value) {
               setState(() {
                 _longBreakTime = value;
               });
@@ -638,10 +639,10 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   duration: Duration(seconds: 2),
                 ),
               );
-            } else if (_longBreakTime == 0) {
+            } else if (_longBreakTime <= 4) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Long Break Minimum 1 minute'),
+                  content: Text('Long Break Minimum 5 minute'),
                   duration: Duration(seconds: 2),
                 ),
               );
