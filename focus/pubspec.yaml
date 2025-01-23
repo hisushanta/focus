@@ -27,6 +27,12 @@ flutter:
   assets:
     - "assets/school-bell.mp3"
     - "assets/focus_logo.png"
+  fonts:
+    - family: DM_SerifText
+      fonts: 
+        - asset: fonts\DMSerifText-Italic.ttf
+          style: italic
+    
 flutter_icons:
   android: true
   ios: true

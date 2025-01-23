@@ -48,7 +48,7 @@ class FocusKeeperApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Focus',
       theme: ThemeData(
-        fontFamily: 'Arial',
+        fontFamily: "DM_SerifText",
         primaryColor: Colors.redAccent,
       ),
       home: const FocusKeeperHomePage(),
@@ -352,7 +352,7 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.redAccent,
-                                    fontStyle: FontStyle.italic,
+                                   
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -370,7 +370,7 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
                       children: [
                         Text(
                           '$currentPhase Timer', // Display the current phase
-                          style:  TextStyle(fontSize: 20, color: Colors.grey, fontStyle: FontStyle.italic),
+                          style:  TextStyle(fontSize: 20, color: Colors.grey),
                         ),
                         const SizedBox(height: 10),
                         Text(
@@ -891,7 +891,7 @@ Widget build(BuildContext context) {
                   child: Text(
                     _isSnoozePhase ? widget.snoozNote : widget.breakNote,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 24,fontFamily: 'DM_SerifText', fontWeight: FontWeight.bold),
                     maxLines: 4, // Limit to a maximum of 4 lines
                     overflow: TextOverflow.ellipsis, // Add ellipsis for overflow
                     softWrap: true, // Enable wrapping
@@ -904,6 +904,7 @@ Widget build(BuildContext context) {
                       : '${_breakCountdown ~/ 60}:${(_breakCountdown % 60).toString().padLeft(2, '0')}',
                   style: const TextStyle(
                     fontSize: 24,
+                    fontFamily: "DM_SerifText",
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
