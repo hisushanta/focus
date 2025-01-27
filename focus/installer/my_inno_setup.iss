@@ -35,7 +35,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=C:\Users\hi_ai\Documents\MyProject\Focus\focus\installer
-OutputBaseFilename=mysetup
+OutputBaseFilename=focus
 SetupIconFile=C:\Users\hi_ai\Documents\MyProject\Focus\focus\installer\focus_logo.ico
 Compression=lzma
 SolidCompression=yes
