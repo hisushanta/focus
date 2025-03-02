@@ -342,28 +342,41 @@ class _FocusKeeperHomePageState extends State<FocusKeeperHomePage> {
                       height: 50, // Title bar height
                       child: Row(
                         children: [
+                          // Custom PNG Icon
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10), // Add left padding
+                            child: Image.asset(
+                              'assets/focus_logo.png', // Path to your custom image
+                              width: 30, // Adjust the width of the image
+                              height: 30, // Adjust the height of the image
+                              fit: BoxFit.cover, // Adjust how the image fits within the space
+                            ),
+                          ),
+                          const SizedBox(width: 3), // Add spacing between the icon and circle
+
+                          // "FOCUS" Title
                           Expanded(
                             child: MoveWindow(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
                                 child: Text(
                                   'FOCUS',
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.redAccent,
-                                   
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
                           ),
+
+                          // Window Buttons
                           WindowButtons(),
                         ],
                       ),
                     ),
-
                     // Timer Display
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
