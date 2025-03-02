@@ -17,15 +17,11 @@
   
 1. **Download the latest release**
 
-    * Download the latest tagged ZIP file: [Download Here](https://github.com/hisushanta/focus/archive/refs/tags/v1.6.zip).
-
-2. **Extract the ZIP file**
-
-    * Unzip the downloaded file on your desktop.
+    * Download the latest focus.exe file: [Download Here](https://github.com/hisushanta/focus/releases/download/v1.6/focus.exe).
 
 3. **Run the Installer**
 
-   * Open the extracted folder and run focus.exe to install the application.
+   * run focus.exe to install the application.
 
 ### License 📜
 
